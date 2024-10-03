@@ -12,6 +12,10 @@ app.set('views', `${__dirname}/views`);
 app.set('view engine', 'pug');
 app.use(express.static(`${__dirname}/public`));//Định tuyến file tĩnh (Quan trọng phải có)
 
+import sequelize from './config/database';
+sequelize; // Kết nối database Mysql thông qua Sequelize
+
+
 app.get('/tours', (req:Request, res:Response) => {
     res.render('client/pages/tours/index',{
         title:"Danh sách tour"
