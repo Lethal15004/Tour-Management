@@ -4,4 +4,8 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title #{title}
     body 
-     h1 Trang Danh sách tour
+        h1 Trang Danh sách tour
+        ul 
+            each tour in tours
+                li 
+                    a(href=`/tours/${tour.slug}`) #{tour.title}

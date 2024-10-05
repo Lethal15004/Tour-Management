@@ -14,11 +14,21 @@ app.use(express.static(`${__dirname}/public`));//Định tuyến file tĩnh (Qua
 
 import sequelize from './config/database';
 sequelize; // Kết nối database Mysql thông qua Sequelize
+import Tour from './model/tour.model';//Nhúng model Tour vào dự án
 
+app.get('/tours', async (req:Request, res:Response) => {
+    const tours= await Tour.findAll({
+        where:{
+            deleted:false,
+            status:'active'
+        },
+        raw:true // Để đảm bảo dữ liệu trả về là dạng mảng và đẹp hơn
+    });
 
-app.get('/tours', (req:Request, res:Response) => {
+    console.log(tours);
     res.render('client/pages/tours/index',{
-        title:"Danh sách tour"
+        title:"Danh sách tour",
+        tours:tours
     })
 })
 
