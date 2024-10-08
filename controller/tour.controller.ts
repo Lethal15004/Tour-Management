@@ -2,6 +2,7 @@ import { Request,Response } from "express";
 import Tour from '../model/tour.model';//Nhúng model Tour vào dự án
 import sequelize from "../config/database";
 import { QueryTypes } from "sequelize";
+import { Json } from "sequelize/types/utils";
 
 export const index = async(req: Request, res: Response) => {
     const slugCategory=`${req.params.slugCategory}`;
@@ -44,4 +45,36 @@ export const index = async(req: Request, res: Response) => {
         title:"Danh sách tour",
         tours:tours
     })
+}
+export const detail= async (req: Request, res: Response) => {
+    const slugTour :string =`${req.params.slugTour}`;
+    // const tour = await sequelize.query(`
+    //     SELECT tours.*, ROUND(price*(1-discount/100)) as price_special
+    //     FROM tours
+    //     WHERE slug='${slugTour}'
+    //     AND deleted=false
+    //     AND status='active'
+    // `,{
+    //     type:QueryTypes.SELECT,
+    // });
+    const tour=await Tour.findOne({
+        where:{
+            slug:slugTour,
+            deleted:false,
+            status:'active'
+        },
+        raw:true
+    })
+    const arrayImages = JSON.parse(tour['images']);
+    tour['images']=[];
+    tour['price_special']=Math.round(tour['price']*(1-tour['discount']/100));
+    
+    for(const image of arrayImages){
+        tour['images'].push(image);
+    }
+
+    res.render('client/pages/tours/detail',{
+        title:'Chi tiết tour',
+        tour:tour
+    });
 }
